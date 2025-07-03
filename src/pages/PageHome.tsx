@@ -1,4 +1,4 @@
-import supabase from "@/config/supabase";
+import supabase from "@/configs/supabase";
 import { useEffect } from "react";
 
 export const PageHome = () => {
