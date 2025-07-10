@@ -1,5 +1,6 @@
 import {
   ONLY_LOGGED_IN_FALLBACK_PATH,
+  ONLY_LOGGED_IN_PATHS,
   ONLY_NON_LOGGED_IN_FALLBACK_PATH,
   ONLY_NON_LOGGED_IN_PATHS,
 } from "@/lib/consts/paths";
@@ -24,6 +25,7 @@ export const LayoutRoot = () => {
       .finally(() => {
         setIsRestoringSession(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (isRestoringSession) {
     return (
@@ -51,7 +53,10 @@ export const LayoutRoot = () => {
     }
     return <Navigate to={ONLY_NON_LOGGED_IN_FALLBACK_PATH} replace />;
   }
-  if (isInNonLoggedInPath) {
+  if (
+    isInNonLoggedInPath ||
+    !ONLY_LOGGED_IN_PATHS.includes(location.pathname)
+  ) {
     return <Navigate to={ONLY_LOGGED_IN_FALLBACK_PATH} replace />;
   }
   return <Outlet />;

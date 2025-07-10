@@ -5,7 +5,6 @@ export default class ServiceAuth {
   static async restoreSession() {
     try {
       const resGetSession = await supabase.auth.getSession();
-      console.log(resGetSession);
       const sessionUser = resGetSession.data?.session?.user;
       if (resGetSession.error || !sessionUser?.id) {
         throw resGetSession.error;
@@ -18,7 +17,7 @@ export default class ServiceAuth {
     } catch (error) {
       return {
         ok: false,
-        error,
+        error: (error as AuthError)?.message || "Error al restaurar sesión",
         data: null,
       };
     }

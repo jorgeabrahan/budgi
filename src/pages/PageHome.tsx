@@ -1,13 +1,5 @@
-import supabase from "@/configs/supabase";
-import { useEffect } from "react";
+import { FormCreateTransaction } from "@/components/FormCreateTransaction";
 
 export const PageHome = () => {
-  useEffect(() => {
-    console.log(supabase);
-  }, []);
-  return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
-  );
+  return <FormCreateTransaction />;
 };
