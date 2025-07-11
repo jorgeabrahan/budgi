@@ -2,17 +2,15 @@ import useAccounts from "@/hooks/useAccounts";
 import useForm from "@/hooks/useForm";
 import useTags from "@/hooks/useTags";
 import { REQUEST_FALLBACK_ERROR } from "@/lib/consts/errors";
+import { PATHS } from "@/lib/consts/paths";
 import {
   TRANSACTION_TYPES,
   TRANSACTION_TYPES_LABELS,
 } from "@/lib/consts/transaction";
 import type { Tables } from "@/types/database.types";
+import { AccountBalanceWallet, LocalOffer } from "@mui/icons-material";
 import {
-  AccountBalanceWallet,
-  LocalOffer,
-  UploadFile,
-} from "@mui/icons-material";
-import {
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -21,20 +19,22 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
-  Autocomplete,
   Tooltip,
-  FormHelperText,
-  OutlinedInput,
+  Typography,
 } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import FileDropZone from "./global/FileDropZone";
 
+const DATE_INSTANCE = new Date();
+
 export const FormCreateTransaction = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const { tags } = useTags();
   const { accounts } = useAccounts();
+  const [today] = DATE_INSTANCE.toISOString().split("T");
   const {
     date,
     type,
@@ -45,7 +45,7 @@ export const FormCreateTransaction = () => {
     onChange,
     form,
   } = useForm({
-    date: "",
+    date: today,
     type: "",
     amount: "",
     interest_rate: "",
@@ -201,15 +201,14 @@ export const FormCreateTransaction = () => {
                 color="primary"
                 variant="contained"
                 size="medium"
+                component={RouterLink}
+                to={PATHS.root.accounts.new.absolute}
                 sx={{
                   minWidth: "unset",
                   width: 40,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                }}
-                onClick={() => {
-                  // TODO: lógica futura
                 }}
                 disabled={isSubmitting}
               >
@@ -256,6 +255,8 @@ export const FormCreateTransaction = () => {
               color="primary"
               variant="contained"
               size="medium"
+              component={RouterLink}
+              to={PATHS.root.tags.new.absolute}
               sx={{
                 minWidth: "unset",
                 width: 40,
@@ -264,9 +265,6 @@ export const FormCreateTransaction = () => {
                 justifyContent: "center",
                 mt: "16px",
                 mb: "8px",
-              }}
-              onClick={() => {
-                // TODO: lógica futura
               }}
               disabled={isSubmitting}
             >

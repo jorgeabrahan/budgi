@@ -40,7 +40,7 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
         sx={{
           mt: 2,
           p: 3,
-          border: "2px dotted",
+          border: "3px dashed",
           borderRadius: 2,
           borderColor: "text.secondary",
           textAlign: "center",

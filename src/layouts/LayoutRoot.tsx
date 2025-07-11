@@ -1,11 +1,12 @@
 import {
-  ONLY_LOGGED_IN_FALLBACK_PATH,
-  ONLY_LOGGED_IN_PATHS,
-  ONLY_NON_LOGGED_IN_FALLBACK_PATH,
-  ONLY_NON_LOGGED_IN_PATHS,
+  PATH_AUTH_FALLBACK,
+  PATHS_AUTH,
+  PATH_GUEST_FALLBACK,
+  PATHS_GUEST,
 } from "@/lib/consts/paths";
 import ServiceAuth from "@/services/ServiceAuth";
 import useStoreUser from "@/stores/useStoreUser";
+import { WrapperMain } from "@/wrappers/WrapperMain";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
@@ -44,20 +45,19 @@ export const LayoutRoot = () => {
       </Box>
     );
   }
-  const isInNonLoggedInPath = ONLY_NON_LOGGED_IN_PATHS.includes(
-    location.pathname
-  );
+  const isInNonLoggedInPath = PATHS_GUEST.includes(location.pathname);
   if (!isLoggedIn) {
     if (isInNonLoggedInPath) {
       return <Outlet />;
     }
-    return <Navigate to={ONLY_NON_LOGGED_IN_FALLBACK_PATH} replace />;
+    return <Navigate to={PATH_GUEST_FALLBACK} replace />;
   }
-  if (
-    isInNonLoggedInPath ||
-    !ONLY_LOGGED_IN_PATHS.includes(location.pathname)
-  ) {
-    return <Navigate to={ONLY_LOGGED_IN_FALLBACK_PATH} replace />;
+  if (isInNonLoggedInPath || !PATHS_AUTH.includes(location.pathname)) {
+    return <Navigate to={PATH_AUTH_FALLBACK} replace />;
   }
-  return <Outlet />;
+  return (
+    <WrapperMain>
+      <Outlet />
+    </WrapperMain>
+  );
 };

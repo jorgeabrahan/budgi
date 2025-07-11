@@ -1,5 +1,5 @@
 import { FormCreateTransaction } from "@/components/FormCreateTransaction";
 
-export const PageHome = () => {
+export const PageNewTransaction = () => {
   return <FormCreateTransaction />;
 };
