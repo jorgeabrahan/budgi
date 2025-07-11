@@ -23,13 +23,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import FileDropZone from "./global/FileDropZone";
 
 const DATE_INSTANCE = new Date();
 
 export const FormCreateTransaction = () => {
-  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const { tags } = useTags();
