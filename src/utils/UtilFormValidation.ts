@@ -29,6 +29,19 @@ export default class UtilFormValidation {
     };
   }
 
+  static color(color: string): { isValid: boolean; error: string } {
+    if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      return {
+        isValid: false,
+        error: "El color debe ser un código hexadecimal válido",
+      };
+    }
+    return {
+      isValid: true,
+      error: "",
+    };
+  }
+
   static password(password: string): { isValid: boolean; error: string } {
     if (password.length < 8) {
       return {

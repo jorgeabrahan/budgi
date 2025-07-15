@@ -9,7 +9,10 @@ import useStoreUser from "@/stores/useStoreUser";
 import { WrapperMain } from "@/wrappers/WrapperMain";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { matchPath, Navigate, Outlet, useLocation } from "react-router-dom";
+
+const matchesAny = (pathname: string, patterns: string[]) =>
+  patterns.some((p) => matchPath({ path: p, end: true }, pathname));
 
 export const LayoutRoot = () => {
   const location = useLocation();
@@ -45,16 +48,17 @@ export const LayoutRoot = () => {
       </Box>
     );
   }
-  const isInNonLoggedInPath = PATHS_GUEST.includes(location.pathname);
+  const isInNonLoggedInPath = matchesAny(location.pathname, PATHS_GUEST);
+
   if (!isLoggedIn) {
-    if (isInNonLoggedInPath) {
-      return <Outlet />;
-    }
+    if (isInNonLoggedInPath) return <Outlet />;
     return <Navigate to={PATH_GUEST_FALLBACK} replace />;
   }
-  if (isInNonLoggedInPath || !PATHS_AUTH.includes(location.pathname)) {
+
+  if (isInNonLoggedInPath || !matchesAny(location.pathname, PATHS_AUTH)) {
     return <Navigate to={PATH_AUTH_FALLBACK} replace />;
   }
+
   return (
     <WrapperMain>
       <Outlet />

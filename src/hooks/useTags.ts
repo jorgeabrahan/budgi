@@ -28,27 +28,36 @@ const useTags = () => {
 
   const createTag = async (tag: Omit<Tables<"tags">, "id" | "created_at">) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok, data } = await ServiceTag.create(tag);
+    const { ok, data, error } = await ServiceTag.create(tag);
     if (ok && data) storeAddTag(data);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return {
+      ok,
+      error,
+    };
   };
   const deleteTag = async (id: string) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok } = await ServiceTag.delete(id);
+    const { ok, error } = await ServiceTag.delete(id);
     if (ok) storeRemoveTag(id);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return {
+      ok,
+      error,
+    };
   };
   const updateTag = async (
     id: string,
     tag: Omit<Tables<"tags">, "id" | "created_at">
   ) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok, data } = await ServiceTag.update(id, tag);
+    const { ok, data, error } = await ServiceTag.update(id, tag);
     if (ok && data) storeUpdateTag(data);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return {
+      ok,
+      error,
+    };
   };
 
   return { tags, status, createTag, deleteTag, updateTag };

@@ -99,12 +99,7 @@ export const PageSignIn = () => {
           />
 
           {formError && (
-            <Typography
-              variant="body2"
-              color="error"
-              align="center"
-              sx={{ mt: 1, mb: 1 }}
-            >
+            <Typography variant="body2" color="error" sx={{ mt: 1, mb: 1 }}>
               {formError}
             </Typography>
           )}

@@ -5,7 +5,10 @@ import type { PostgrestError } from "@supabase/supabase-js";
 export default class ServiceTag {
   static async getAll() {
     try {
-      const { data, error } = await supabase.from("tags").select("*");
+      const { data, error } = await supabase
+        .from("tags")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return {
         ok: true,
@@ -23,7 +26,26 @@ export default class ServiceTag {
   }
   static async create(tag: Omit<Tables<"tags">, "id" | "created_at">) {
     try {
-      const { data, error } = await supabase.from("tags").insert(tag);
+      const { data: duplicate, error: duplicateError } = await supabase
+        .from("tags")
+        .select("id")
+        .ilike("label", tag.label)
+        .eq("user_id", tag.user_id)
+        .limit(1)
+        .maybeSingle();
+      if (duplicateError) throw duplicateError;
+      if (duplicate) {
+        return {
+          ok: false,
+          error: `Ya tienes una etiqueta llamada "${tag.label}"`,
+          data: null,
+        };
+      }
+      const { data, error } = await supabase
+        .from("tags")
+        .insert(tag)
+        .select("*")
+        .maybeSingle();
       if (error) throw error;
       return {
         ok: true,
@@ -64,7 +86,9 @@ export default class ServiceTag {
       const { data, error } = await supabase
         .from("tags")
         .update(tag)
-        .eq("id", id);
+        .eq("id", id)
+        .select("*")
+        .maybeSingle();
       if (error) throw error;
       return {
         ok: true,

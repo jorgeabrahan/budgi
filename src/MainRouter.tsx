@@ -9,6 +9,7 @@ import { PageAccounts } from "./pages/PageAccounts";
 import { PageNewTransaction } from "./pages/transactions/PageNewTransaction";
 import { PageNewAccount } from "./pages/accounts/PageNewAccount";
 import { PageNewTag } from "./pages/tags/PageNewTag";
+import { PageEditTag } from "./pages/tags/PageEditTag";
 
 export const MainRouter = () => {
   return (
@@ -21,6 +22,10 @@ export const MainRouter = () => {
             <Route
               path={PATHS.root.tags.new.relative}
               element={<PageNewTag />}
+            />
+            <Route
+              path={PATHS.root.tags.edit.relative}
+              element={<PageEditTag />}
             />
           </Route>
           <Route path={PATHS.root.transactions.relative}>
