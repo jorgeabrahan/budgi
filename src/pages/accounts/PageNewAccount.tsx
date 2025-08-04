@@ -1,7 +1,5 @@
+import { FormCreateAccount } from "@/components/FormCreateAccount";
+
 export const PageNewAccount = () => {
-  return (
-    <div>
-      <p>Create new account</p>
-    </div>
-  );
+  return <FormCreateAccount />;
 };

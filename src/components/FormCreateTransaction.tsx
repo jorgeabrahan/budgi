@@ -86,7 +86,7 @@ export const FormCreateTransaction = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h5" fontWeight={700} align="center" gutterBottom>
-        Nueva transacción
+        Crear transacción
       </Typography>
 
       <Box

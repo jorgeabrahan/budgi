@@ -3,8 +3,10 @@ import useStoreAccounts from "@/stores/useStoreAccounts";
 import { REQUEST_STATUS } from "@/lib/consts/request";
 import ServiceAccount from "@/services/ServiceAccount";
 import type { Tables } from "@/types/database.types";
+import useStoreUser from "@/stores/useStoreUser";
 
 const useAccounts = () => {
+  const user = useStoreUser((store) => store.user);
   const accounts = useStoreAccounts((store) => store.accounts);
   const status = useStoreAccounts((store) => store.status);
   const storeSetAccounts = useStoreAccounts((store) => store.setAccounts);
@@ -14,34 +16,34 @@ const useAccounts = () => {
   const storeSetStatus = useStoreAccounts((store) => store.setStatus);
 
   useEffect(() => {
-    if (status !== REQUEST_STATUS.idle) return;
+    if (status !== REQUEST_STATUS.idle || !user?.id) return;
     storeSetStatus(REQUEST_STATUS.loading);
     (async () => {
-      const { ok, data } = await ServiceAccount.getAll();
+      const { ok, data } = await ServiceAccount.getAll(user.id);
       if (ok && data) {
         storeSetAccounts(data);
       }
       storeSetStatus(REQUEST_STATUS.finished);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const createAccount = async (
     account: Omit<Tables<"accounts">, "id" | "created_at">
   ) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok, data } = await ServiceAccount.create(account);
+    const { ok, data, error } = await ServiceAccount.create(account);
     if (ok && data) storeAddAccount(data);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return { ok, error };
   };
 
   const deleteAccount = async (id: string) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok } = await ServiceAccount.delete(id);
+    const { ok, error } = await ServiceAccount.delete(id);
     if (ok) storeRemoveAccount(id);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return { ok, error };
   };
 
   const updateAccount = async (
@@ -49,10 +51,10 @@ const useAccounts = () => {
     account: Omit<Tables<"accounts">, "id" | "created_at" | "user_id">
   ) => {
     storeSetStatus(REQUEST_STATUS.loading);
-    const { ok, data } = await ServiceAccount.update(id, account);
+    const { ok, data, error } = await ServiceAccount.update(id, account);
     if (ok && data) storeUpdateAccount(data);
     storeSetStatus(REQUEST_STATUS.finished);
-    return ok;
+    return { ok, error };
   };
 
   return {

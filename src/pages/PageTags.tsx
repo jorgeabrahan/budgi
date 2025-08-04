@@ -1,50 +1,22 @@
-import {
-  alpha,
-  Box,
-  CircularProgress,
-  Fab,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { alpha, Box, Fab, Grid, Paper, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
 import { PATHS } from "@/lib/consts/paths";
 import useTags from "@/hooks/useTags";
 import { SymbolIcon } from "@/components/global/SymbolIcon";
-import { REQUEST_STATUS } from "@/lib/consts/request";
+import { WrapperListItems } from "@/wrappers/WrapperListItems";
 
 export const PageTags = () => {
   const { tags, status } = useTags();
 
   return (
     <Box sx={{ position: "relative", minHeight: "100vh", p: 2, mt: 10 }}>
-      <Grid container spacing={2}>
-        {tags.length === 0 && status === REQUEST_STATUS.finished && (
-          <Grid size={12}>
-            <Typography
-              variant="body1"
-              align="center"
-              sx={{ mt: 4, color: "text.secondary" }}
-            >
-              Aún no has creado ninguna etiqueta.
-            </Typography>
-          </Grid>
-        )}
-        {status === REQUEST_STATUS.loading && (
-          <Grid
-            size={12}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            sx={{ mt: 4 }}
-          >
-            <CircularProgress />
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-              Cargando etiquetas…
-            </Typography>
-          </Grid>
-        )}
+      <WrapperListItems
+        itemsAmount={tags.length}
+        status={status}
+        emptyItemsMessage="Aún no has creado ninguna etiqueta."
+        loadingItemsMessage="Cargando etiquetas…"
+      >
         {tags.map((tag) => (
           <Grid size={{ xs: 12, sm: 6 }} key={tag.id}>
             <Paper
@@ -78,7 +50,7 @@ export const PageTags = () => {
             </Paper>
           </Grid>
         ))}
-      </Grid>
+      </WrapperListItems>
 
       <Fab
         color="primary"

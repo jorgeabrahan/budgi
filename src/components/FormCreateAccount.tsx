@@ -1,30 +1,32 @@
-import { useState } from "react";
-import { Container, Typography } from "@mui/material";
-import { REQUEST_FALLBACK_ERROR } from "@/lib/consts/errors";
-import useTags from "@/hooks/useTags";
 import useForm from "@/hooks/useForm";
-import useStoreUser from "@/stores/useStoreUser";
-import UtilFormValidation from "@/utils/UtilFormValidation";
-import { REQUEST_STATUS } from "@/lib/consts/request";
-import { useNavigate } from "react-router-dom";
-import { PATHS } from "@/lib/consts/paths";
-import { FormTag } from "./FormTag";
 import { DEFAULT_COLOR, DEFAULT_ICON } from "@/lib/consts/defaults";
+import useStoreUser from "@/stores/useStoreUser";
+import { Container, Typography } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FormAccount } from "./FormAccount";
+import UtilFormValidation from "@/utils/UtilFormValidation";
+import useAccounts from "@/hooks/useAccounts";
+import { REQUEST_FALLBACK_ERROR } from "@/lib/consts/errors";
+import { PATHS } from "@/lib/consts/paths";
+import { REQUEST_STATUS } from "@/lib/consts/request";
 
-export const FormCreateTag = () => {
+export const FormCreateAccount = () => {
   const navigate = useNavigate();
   const user = useStoreUser((store) => store.user);
-  const { status, createTag } = useTags();
+  const { status, createAccount } = useAccounts();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const { color, label, icon, onChange, form, setError, setValue } = useForm({
-    label: "",
-    color: DEFAULT_COLOR,
-    icon: DEFAULT_ICON,
-  });
+  const { form, icon, name, color, currency, onChange, setError, setValue } =
+    useForm({
+      icon: DEFAULT_ICON,
+      name: "",
+      color: DEFAULT_COLOR,
+      currency: "",
+    });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,9 +34,9 @@ export const FormCreateTag = () => {
     form.clearErrors();
     setFormError("");
 
-    const labelRequired = UtilFormValidation.required(label);
-    if (!labelRequired.isValid) {
-      setError(form.label.id, labelRequired.error);
+    const nameRequired = UtilFormValidation.required(name);
+    if (!nameRequired.isValid) {
+      setError(form.name.id, nameRequired.error);
     }
 
     const iconRequired = UtilFormValidation.required(icon);
@@ -47,14 +49,20 @@ export const FormCreateTag = () => {
       setError(form.color.id, colorValidation.error);
     }
 
+    const currencyValidation = UtilFormValidation.uuid(currency, "moneda");
+    if (!currencyValidation.isValid) {
+      setError(form.currency.id, currencyValidation.error);
+    }
+
     if (!form.isValid()) return;
 
     setIsSubmitting(true);
-    const { ok, error } = await createTag({
-      label,
+    const { ok, error } = await createAccount({
+      name,
       color,
-      user_id: user.id,
       icon,
+      currency_id: currency,
+      user_id: user.id,
     });
     setIsSubmitting(false);
     if (!ok) {
@@ -62,7 +70,7 @@ export const FormCreateTag = () => {
       return;
     }
     form.reset();
-    navigate(PATHS.root.tags.absolute);
+    navigate(PATHS.root.accounts.absolute);
   };
 
   const isLoading = status === REQUEST_STATUS.loading;
@@ -70,17 +78,17 @@ export const FormCreateTag = () => {
   return (
     <Container maxWidth="xs" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h5" fontWeight={700} align="center" gutterBottom>
-        Crear etiqueta
+        Crear cuenta
       </Typography>
-      <FormTag
+      <FormAccount
         form={form}
         handleSubmit={handleSubmit}
         onChange={onChange}
-        setValue={setValue}
         isDisabled={isSubmitting || isLoading}
         isIconPickerOpen={pickerOpen}
         setIsIconPickerOpen={setPickerOpen}
         formError={formError}
+        setValue={setValue}
       />
     </Container>
   );

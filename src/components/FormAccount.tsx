@@ -3,26 +3,35 @@ import {
   Button,
   FormControl,
   InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import { SymbolIcon } from "./global/SymbolIcon";
 import { DialogIconPicker } from "./dialogs/DialogIconPicker";
+import useCurrencies from "@/hooks/useCurrencies";
+import { REQUEST_STATUS } from "@/lib/consts/request";
 
-interface FormTagProps {
+interface FormAccountProps {
   form: {
     icon: {
       id: "icon";
       value: string;
       error: string;
     };
-    label: {
-      id: "label";
+    name: {
+      id: "name";
       value: string;
       error: string;
     };
     color: {
       id: "color";
+      value: string;
+      error: string;
+    };
+    currency: {
+      id: "currency";
       value: string;
       error: string;
     };
@@ -38,7 +47,7 @@ interface FormTagProps {
     >
   ) => void;
   setValue: (
-    inputKey: "color" | "label" | "icon",
+    inputKey: "currency" | "name" | "color" | "icon",
     value: string | boolean | number
   ) => void;
   isDisabled: boolean;
@@ -47,7 +56,7 @@ interface FormTagProps {
   formError: string;
 }
 
-export const FormTag = ({
+export const FormAccount = ({
   form,
   handleSubmit,
   onChange,
@@ -56,21 +65,24 @@ export const FormTag = ({
   isIconPickerOpen,
   setIsIconPickerOpen,
   formError,
-}: FormTagProps) => {
+}: FormAccountProps) => {
+  const { status: statusCurrencies, currencies } = useCurrencies();
+  const isLoading = statusCurrencies === REQUEST_STATUS.loading || isDisabled;
   return (
     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
       <TextField
         fullWidth
         margin="normal"
-        label="Nombre de la etiqueta"
-        name={form.label.id}
-        value={form.label.value}
+        label="Nombre de la cuenta"
+        name={form.name.id}
+        value={form.name.value}
         onChange={onChange}
-        error={!!form.label.error}
-        helperText={form.label.error}
+        error={!!form.name.error}
+        helperText={form.name.error}
         required
-        disabled={isDisabled}
+        disabled={isLoading}
       />
+
       <FormControl fullWidth margin="normal">
         <InputLabel shrink htmlFor={form.color.id}>
           Color
@@ -82,7 +94,7 @@ export const FormTag = ({
           onChange={onChange}
           error={!!form.color.error}
           helperText={form.color.error}
-          disabled={isDisabled}
+          disabled={isLoading}
           InputProps={{
             endAdornment: (
               <Box
@@ -91,7 +103,7 @@ export const FormTag = ({
                 value={form.color.value}
                 onChange={onChange}
                 name={form.color.id}
-                disabled={isDisabled}
+                disabled={isLoading}
                 sx={{
                   width: 32,
                   height: 32,
@@ -106,7 +118,7 @@ export const FormTag = ({
             sx: { cursor: "pointer" },
           }}
           onClick={() => {
-            if (isDisabled) return;
+            if (isLoading) return;
             document
               .querySelector<HTMLInputElement>(
                 `input[type="color"][name="${form.color.id}"]`
@@ -126,9 +138,9 @@ export const FormTag = ({
           value={form.icon.value}
           error={!!form.icon.error}
           helperText={form.icon.error}
-          disabled={isDisabled}
+          disabled={isLoading}
           onClick={() => {
-            if (isDisabled) return;
+            if (isLoading) return;
             setIsIconPickerOpen(true);
           }}
           InputProps={{
@@ -141,6 +153,41 @@ export const FormTag = ({
             sx: { cursor: "pointer" },
           }}
         />
+      </FormControl>
+
+      <FormControl fullWidth margin="normal" required disabled={isLoading}>
+        <InputLabel id="currency-label">Moneda</InputLabel>
+        <Select
+          labelId="currency-label"
+          id={form.currency.id}
+          name={form.currency.id}
+          value={form.currency.value}
+          required
+          onChange={(event) =>
+            onChange({
+              target: {
+                name: form.currency.id,
+                value: event.target.value,
+              },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
+          error={!!form.currency.error}
+          disabled={isLoading}
+          label="Moneda"
+        >
+          <MenuItem disabled value="">
+            <em>-- Selecciona una moneda --</em>
+          </MenuItem>
+          {currencies.map((currency) => (
+            <MenuItem
+              disabled={!currency.is_active}
+              value={currency.id}
+              key={currency.id}
+            >
+              ({currency.code}) {currency.name}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
 
       <DialogIconPicker
@@ -160,9 +207,9 @@ export const FormTag = ({
         variant="contained"
         sx={{ mt: 3 }}
         type="submit"
-        disabled={isDisabled}
+        disabled={isLoading}
       >
-        Guardar etiqueta
+        Guardar cuenta
       </Button>
     </Box>
   );

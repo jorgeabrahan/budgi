@@ -3,8 +3,10 @@ import useStoreTags from "../stores/useStoreTags";
 import { REQUEST_STATUS } from "@/lib/consts/request";
 import ServiceTag from "@/services/ServiceTag";
 import type { Tables } from "@/types/database.types";
+import useStoreUser from "@/stores/useStoreUser";
 
 const useTags = () => {
+  const user = useStoreUser((store) => store.user);
   const tags = useStoreTags((store) => store.tags);
   const storeSetTags = useStoreTags((store) => store.setTags);
   const storeAddTag = useStoreTags((store) => store.addTag);
@@ -14,17 +16,17 @@ const useTags = () => {
   const storeSetStatus = useStoreTags((store) => store.setStatus);
 
   useEffect(() => {
-    if (status !== REQUEST_STATUS.idle) return;
+    if (status !== REQUEST_STATUS.idle || !user?.id) return;
     storeSetStatus(REQUEST_STATUS.loading);
     (async () => {
-      const { ok, data } = await ServiceTag.getAll();
+      const { ok, data } = await ServiceTag.getAll(user.id);
       if (ok && data) {
         storeSetTags(data);
       }
       storeSetStatus(REQUEST_STATUS.finished);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const createTag = async (tag: Omit<Tables<"tags">, "id" | "created_at">) => {
     storeSetStatus(REQUEST_STATUS.loading);
@@ -48,7 +50,7 @@ const useTags = () => {
   };
   const updateTag = async (
     id: string,
-    tag: Omit<Tables<"tags">, "id" | "created_at">
+    tag: Omit<Tables<"tags">, "id" | "created_at" | "user_id">
   ) => {
     storeSetStatus(REQUEST_STATUS.loading);
     const { ok, data, error } = await ServiceTag.update(id, tag);

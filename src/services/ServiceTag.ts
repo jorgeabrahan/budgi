@@ -3,11 +3,12 @@ import type { Tables } from "@/types/database.types";
 import type { PostgrestError } from "@supabase/supabase-js";
 
 export default class ServiceTag {
-  static async getAll() {
+  static async getAll(userId: string = "") {
     try {
       const { data, error } = await supabase
         .from("tags")
         .select("*")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return {

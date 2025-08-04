@@ -1,14 +1,14 @@
 import { REQUEST_STATUS } from "@/lib/consts/request";
-import type { Tables } from "@/types/database.types";
+import type { AccountWithBalance } from "@/types/model.types";
 import type { RequestStatus } from "@/types/request.types";
 import { create } from "zustand";
 
 type Store = {
-  accounts: Tables<"accounts">[];
+  accounts: AccountWithBalance[];
   status: RequestStatus;
-  setAccounts: (accounts: Tables<"accounts">[]) => void;
-  addAccount: (account: Tables<"accounts">) => void;
-  updateAccount: (account: Partial<Tables<"accounts">>) => void;
+  setAccounts: (accounts: AccountWithBalance[]) => void;
+  addAccount: (account: AccountWithBalance) => void;
+  updateAccount: (account: Partial<AccountWithBalance>) => void;
   removeAccount: (accountId: string) => void;
   setStatus: (status: RequestStatus) => void;
 };

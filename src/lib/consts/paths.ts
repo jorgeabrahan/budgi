@@ -40,6 +40,12 @@ export const PATHS = {
         absolute: "/accounts/new",
         access: PATH_ACCESS_TYPES.auth,
       },
+      edit: {
+        relative: "edit/:id",
+        absolute: "/accounts/edit/:id",
+        generate: ({ id = "" }: { id: string }) => `/accounts/edit/${id}`,
+        access: PATH_ACCESS_TYPES.auth,
+      },
     },
     transactions: {
       relative: "transactions",

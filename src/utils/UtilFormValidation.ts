@@ -78,4 +78,37 @@ export default class UtilFormValidation {
       error: "",
     };
   }
+
+  static required(value: string): { isValid: boolean; error: string } {
+    if (value?.trim()?.length === 0) {
+      return {
+        isValid: false,
+        error: "El campo es requerido",
+      };
+    }
+    return {
+      isValid: true,
+      error: "",
+    };
+  }
+
+  static uuid(
+    uuid: string,
+    fieldName = ""
+  ): { isValid: boolean; error: string } {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(uuid)) {
+      return {
+        isValid: false,
+        error: `La opción seleccionada en el campo "${fieldName}" no es valida.`,
+      };
+    }
+    return {
+      isValid: true,
+      error: "",
+    };
+  }
+
+  static empty() {}
 }

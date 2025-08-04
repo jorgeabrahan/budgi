@@ -10,6 +10,7 @@ import { PageNewTransaction } from "./pages/transactions/PageNewTransaction";
 import { PageNewAccount } from "./pages/accounts/PageNewAccount";
 import { PageNewTag } from "./pages/tags/PageNewTag";
 import { PageEditTag } from "./pages/tags/PageEditTag";
+import { PageEditAccount } from "./pages/accounts/PageEditAccount";
 
 export const MainRouter = () => {
   return (
@@ -40,6 +41,10 @@ export const MainRouter = () => {
             <Route
               path={PATHS.root.accounts.new.relative}
               element={<PageNewAccount />}
+            />
+            <Route
+              path={PATHS.root.accounts.edit.relative}
+              element={<PageEditAccount />}
             />
           </Route>
           <Route path={PATHS.root.signIn.relative} element={<PageSignIn />} />
