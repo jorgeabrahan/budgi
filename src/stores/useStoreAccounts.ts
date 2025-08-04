@@ -11,6 +11,7 @@ type Store = {
   updateAccount: (account: Partial<AccountWithBalance>) => void;
   removeAccount: (accountId: string) => void;
   setStatus: (status: RequestStatus) => void;
+  reset: () => void;
 };
 
 const useStoreAccounts = create<Store>()((set) => ({
@@ -32,6 +33,7 @@ const useStoreAccounts = create<Store>()((set) => ({
       accounts: state.accounts.filter((a) => a.id !== accountId),
     })),
   setStatus: (status) => set({ status }),
+  reset: () => set({ accounts: [], status: REQUEST_STATUS.idle }),
 }));
 
 export default useStoreAccounts;

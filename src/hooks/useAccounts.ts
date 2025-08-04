@@ -10,7 +10,7 @@ const useAccounts = () => {
   const accounts = useStoreAccounts((store) => store.accounts);
   const status = useStoreAccounts((store) => store.status);
   const storeSetAccounts = useStoreAccounts((store) => store.setAccounts);
-  const storeAddAccount = useStoreAccounts((store) => store.addAccount);
+  const storeResetAccounts = useStoreAccounts((store) => store.reset);
   const storeRemoveAccount = useStoreAccounts((store) => store.removeAccount);
   const storeUpdateAccount = useStoreAccounts((store) => store.updateAccount);
   const storeSetStatus = useStoreAccounts((store) => store.setStatus);
@@ -33,8 +33,10 @@ const useAccounts = () => {
   ) => {
     storeSetStatus(REQUEST_STATUS.loading);
     const { ok, data, error } = await ServiceAccount.create(account);
-    if (ok && data) storeAddAccount(data);
-    storeSetStatus(REQUEST_STATUS.finished);
+    if (ok && data) {
+      storeResetAccounts();
+    }
+    storeSetStatus(REQUEST_STATUS.idle);
     return { ok, error };
   };
 
